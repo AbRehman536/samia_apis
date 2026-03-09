@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:samia_apis/views/getCompletedTask.dart';
+import 'package:samia_apis/views/getInCompletedTasl.dart';
+import 'package:samia_apis/views/update_task.dart';
 
 import '../models/taskListing.dart';
 import '../provider/user_token.dart';
@@ -15,6 +18,14 @@ class GetAllTask extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Get All Task"),
+        actions: [
+          IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> GetCompletedTask()));
+          }, icon: Icon(Icons.check_circle)),
+          IconButton(onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context)=> GetInCompletedTask()));
+          }, icon: Icon(Icons.circle_outlined)),
+        ],
       ),
       floatingActionButton: FloatingActionButton(onPressed: (){
         Navigator.push(context, MaterialPageRoute(builder: (context)=> CreateTask()));
@@ -30,6 +41,42 @@ class GetAllTask extends StatelessWidget {
               return ListTile(
                 leading: Icon(Icons.task),
                 title: Text(taskListingModel.tasks![index].description.toString()),
+                trailing: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Checkbox(
+                        value: taskListingModel.tasks![index].complete ?? false,
+                        onChanged: taskListingModel.tasks![index].complete == true ? null
+                    :(value)async{
+                          try{
+                            await TaskServices().markTaskAsCompleted(
+                                token: userProvider.getToken().toString(),
+                                taskID: taskListingModel.tasks![index].id.toString());
+                          }catch(e){
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(SnackBar(content: Text(e.toString())));
+                          }
+
+                        }),
+                    IconButton(onPressed: ()async{
+                      try{
+                        await TaskServices().deleteTask(
+                            token: userProvider.getToken().toString(),
+                            taskID: taskListingModel.tasks![index].id.toString())
+                            .then((value){
+                              ScaffoldMessenger.of(context)
+                              .showSnackBar(SnackBar(content: Text("Task Deleted Successfully")));
+                        });
+                      }catch(e){
+                        ScaffoldMessenger.of(context)
+                            .showSnackBar(SnackBar(content: Text(e.toString())));
+                      }
+                    }, icon: Icon(Icons.delete)),
+                    IconButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> UpdateTask(model: taskListingModel.tasks![index])));
+                    }, icon: Icon(Icons.edit))
+                  ]
+                )
               );
             },);
         },
