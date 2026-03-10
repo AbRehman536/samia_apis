@@ -7,7 +7,7 @@ import 'package:samia_apis/models/user.dart';
 
 class AuthService{
 
-  String baseURL = "https://todo-nu-plum-19.vercel.app/";
+  String baseURL = "https://todo-nu-plum-19.vercel.app";
 
   ///Register User
   Future<RegisterModel> registerUser({
