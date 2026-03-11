@@ -10,6 +10,7 @@ import 'package:samia_apis/views/search_task.dart';
   import '../provider/user_token.dart';
   import '../services/task.dart';
   import 'create_Task.dart';
+import 'get_profile.dart';
 
   class GetAllTask extends StatelessWidget {
     const GetAllTask({super.key});
@@ -33,6 +34,9 @@ import 'package:samia_apis/views/search_task.dart';
             IconButton(onPressed: (){
               Navigator.push(context, MaterialPageRoute(builder: (context)=> FilterTask()));
             }, icon: Icon(Icons.filter)),
+            IconButton(onPressed: (){
+              Navigator.push(context, MaterialPageRoute(builder: (context)=> GetProfile()));
+            }, icon: Icon(Icons.person)),
           ],
         ),
         floatingActionButton: FloatingActionButton(onPressed: (){
